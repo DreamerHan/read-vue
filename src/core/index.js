@@ -3,6 +3,7 @@ import { initGlobalAPI } from './global-api/index'
 import { isServerRendering } from 'core/util/env'
 import { FunctionalRenderContext } from 'core/vdom/create-functional-component'
 
+// 1. 初始化全局 API: Vue.set/delete/use/component...
 initGlobalAPI(Vue)
 
 Object.defineProperty(Vue.prototype, '$isServer', {
@@ -17,6 +18,7 @@ Object.defineProperty(Vue.prototype, '$ssrContext', {
 })
 
 // expose FunctionalRenderContext for ssr runtime helper installation
+// 暴露 FunctionalRenderContext 作为ssr运行时的安装助手
 Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 })

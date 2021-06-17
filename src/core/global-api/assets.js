@@ -1,11 +1,12 @@
 /* @flow */
 
+// ASSET_TYPES: component、directive、filter
 import { ASSET_TYPES } from 'shared/constants'
 import { isPlainObject, validateComponentName } from '../util/index'
 
 export function initAssetRegisters (Vue: GlobalAPI) {
   /**
-   * Create asset registration methods.
+   * Create asset registration methods. -- 创建资源注册方法
    */
   ASSET_TYPES.forEach(type => {
     Vue[type] = function (

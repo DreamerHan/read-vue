@@ -58,7 +58,7 @@ export default ({
   devtools: process.env.NODE_ENV !== 'production',
 
   /**
-   * Whether to record perf
+   * Whether to record perf -- 是否记录性能
    */
   performance: false,
 
@@ -86,12 +86,14 @@ export default ({
   /**
    * Check if a tag is reserved so that it cannot be registered as a
    * component. This is platform-dependent and may be overwritten.
+   * 检查标记是否已保留，以便无法将其注册为组件。这取决于平台，可能会被覆盖。
    */
   isReservedTag: no,
 
   /**
    * Check if an attribute is reserved so that it cannot be used as a component
    * prop. This is platform-dependent and may be overwritten.
+   * 检查属性是否已保留，以使其不能用作组件的 prop。这取决于平台，可能会被覆盖。
    */
   isReservedAttr: no,
 

@@ -7,7 +7,13 @@ import { makeMap } from 'shared/util'
 export const isReservedAttr = makeMap('style,class')
 
 // attributes that should be using props for binding
+// 应该使用 props 进行绑定的属性
+
+// acceptValue 得到的是一个函数 fn，执行 makeMap 时的参数，传入fn 后得到 true/false 
+// 表示传入的值是否存在于 acceptValue 保存的映射中
 const acceptValue = makeMap('input,textarea,option,select,progress')
+
+// 类似于 input type="select/checked/text/muted/video" 的标签
 export const mustUseProp = (tag: string, type: ?string, attr: string): boolean => {
   return (
     (attr === 'value' && acceptValue(tag)) && type !== 'button' ||

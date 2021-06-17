@@ -100,8 +100,8 @@ export function toNumber (val: string): number | string {
 }
 
 /**
- * Make a map and return a function for checking if a key
- * is in that map.
+ * Make a map and return a function for checking if a key is in that map.
+ * 制作一个映射并返回一个函数，用于检查键是否在该映射中
  */
 export function makeMap (
   str: string,
@@ -227,6 +227,7 @@ export function toArray (list: any, start?: number): Array<any> {
 
 /**
  * Mix properties into target object.
+ * 将属性混合到目标对象中
  */
 export function extend (to: Object, _from: ?Object): Object {
   for (const key in _from) {
@@ -251,9 +252,10 @@ export function toObject (arr: Array<any>): Object {
 /* eslint-disable no-unused-vars */
 
 /**
- * Perform no operation.
+ * Perform no operation.  // 不执行任何操作
  * Stubbing args to make Flow happy without leaving useless transpiled code
  * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/).
+ * stubing args使流变得愉快，而不会留下无用的传输代码和…rest
  */
 export function noop (a?: any, b?: any, c?: any) {}
 

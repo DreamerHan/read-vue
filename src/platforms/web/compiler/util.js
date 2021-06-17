@@ -7,8 +7,8 @@ export const isUnaryTag = makeMap(
   'link,meta,param,source,track,wbr'
 )
 
-// Elements that you can, intentionally, leave open
-// (and which close themselves)
+// Elements that you can, intentionally, leave open(and which close themselves)
+// 您可以故意使其保持打开的元素（以及它们自己关闭的元素）
 export const canBeLeftOpenTag = makeMap(
   'colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr,source'
 )

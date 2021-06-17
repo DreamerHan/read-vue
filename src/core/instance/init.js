@@ -13,6 +13,7 @@ import { extend, mergeOptions, formatComponentName } from '../util/index'
 let uid = 0
 
 export function initMixin (Vue: Class<Component>) {
+  // 1. 在这里 Vue 有了 _init 方法
   Vue.prototype._init = function (options?: Object) {
     const vm: Component = this
     // a uid
@@ -27,14 +28,21 @@ export function initMixin (Vue: Class<Component>) {
     }
 
     // a flag to avoid this being observed
+    // _isVue 用来避免被观察
     vm._isVue = true
+
     // merge options
+    // 2. 合并选项对象
     if (options && options._isComponent) {
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
       // internal component options needs special treatment.
+
+      // 优化内部组件实例化，因为动态选项合并非常慢，而且没有一个内部组件选项需要特殊处理。
       initInternalComponent(vm, options)
     } else {
+
+      // 3. this.$options 可以访问组件配置的由来
       vm.$options = mergeOptions(
         resolveConstructorOptions(vm.constructor),
         options || {},
@@ -47,15 +55,32 @@ export function initMixin (Vue: Class<Component>) {
     } else {
       vm._renderProxy = vm
     }
+
+    
+    // 4. Vue 的初始化过程开始
     // expose real self
     vm._self = vm
+
+    //4-1. $children, $root
     initLifecycle(vm)
+
+    //4-2. 自定义事件处理
     initEvents(vm)
+
+    //4-3. 插槽解析，_c()/$createElement()
     initRender(vm)
+
+    //4-4. beforeCreate
     callHook(vm, 'beforeCreate')
-    initInjections(vm) // resolve injections before data/props
+
+    //4-5. resolve injections before data/props
+    initInjections(vm) 
+
+    //4-6 props、methods、data
     initState(vm)
-    initProvide(vm) // resolve provide after data/props
+
+    //4-7 resolve provide after data/props
+    initProvide(vm) 
     callHook(vm, 'created')
 
     /* istanbul ignore if */
@@ -66,6 +91,8 @@ export function initMixin (Vue: Class<Component>) {
     }
 
     if (vm.$options.el) {
+
+      // 5. 开始挂载
       vm.$mount(vm.$options.el)
     }
   }

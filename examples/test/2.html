@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <h1>数据响应化</h1>
+    <div v-for="a in arr" :key="a">
+      {{a}}
+    </div>
+  </div>
+  
+  <script src="../../dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        arr: ['foo', 'bar']
+      },
+      beforeCreate() {
+        console.log('beforeCreate 执行')
+      },
+      created() {
+        console.log('created 执行')
+      },
+      beforeMounte() {
+        console.log('beforeMounte 执行')
+      },
+      mounted() {
+        setTimeout(() => {
+          this.arr.push('baz')
+        }, 1000) 
+      }
+    })
+
+    console.log(app.$data)
+
+  </script>
+</body>
+</html>

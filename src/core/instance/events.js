@@ -50,6 +50,7 @@ export function updateComponentListeners (
 }
 
 export function eventsMixin (Vue: Class<Component>) {
+  // 正则： hook: 开头的正则表达式
   const hookRE = /^hook:/
   Vue.prototype.$on = function (event: string | Array<string>, fn: Function): Component {
     const vm: Component = this
@@ -58,6 +59,8 @@ export function eventsMixin (Vue: Class<Component>) {
         vm.$on(event[i], fn)
       }
     } else {
+
+      // [?疑惑?] vm._events 是在哪里产生的
       (vm._events[event] || (vm._events[event] = [])).push(fn)
       // optimize hook:event cost by using a boolean flag marked at registration
       // instead of a hash lookup
@@ -74,6 +77,8 @@ export function eventsMixin (Vue: Class<Component>) {
       vm.$off(event, on)
       fn.apply(vm, arguments)
     }
+
+    // [?疑惑?]这个操作为什么
     on.fn = fn
     vm.$on(event, on)
     return vm

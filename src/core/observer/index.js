@@ -44,6 +44,8 @@ export class Observer {
     this.dep = new Dep()
     this.vmCount = 0
     def(value, '__ob__', this)
+
+    // 5. value 的 数组 和 对象形式的判断
     if (Array.isArray(value)) {
       if (hasProto) {
         protoAugment(value, arrayMethods)
@@ -64,6 +66,8 @@ export class Observer {
   walk (obj: Object) {
     const keys = Object.keys(obj)
     for (let i = 0; i < keys.length; i++) {
+
+      // 6. 对象的响应式定义
       defineReactive(obj, keys[i])
     }
   }
@@ -111,7 +115,16 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
     return
   }
+  
+  //1. 目标是希望有一个 Observer
   let ob: Observer | void
+
+
+  //2. 但是如果已经是响应式对象了，直接返回该对象，不再做重复处理；标识就是 __ob__
+  // __ob__ 就是 Observer 实例，任何一个响应式对象都有该标识，注意是【对象】
+
+  // 之所以这么干，是因为如果出现了 Vue.set() 或者 数组有新元素加入或删除等操作时
+  // 除了响应式处理之外，还要做变更通知操作
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
   } else if (
@@ -121,11 +134,15 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     Object.isExtensible(value) &&
     !value._isVue
   ) {
+
+    // 4. Observer 实例化
     ob = new Observer(value)
   }
   if (asRootData && ob) {
     ob.vmCount++
   }
+
+  // 3. 最终返回一个 ob 实例给外界
   return ob
 }
 
@@ -139,8 +156,10 @@ export function defineReactive (
   customSetter?: ?Function,
   shallow?: boolean
 ) {
+  // 7. dep : key = 1 : 1
   const dep = new Dep()
 
+  // 8. 一些边界的处理，处理用户自定义的 getter/setter
   const property = Object.getOwnPropertyDescriptor(obj, key)
   if (property && property.configurable === false) {
     return
@@ -153,14 +172,23 @@ export function defineReactive (
     val = obj[key]
   }
 
+  // 8. 开启递归处理
   let childOb = !shallow && observe(val)
+  
+  
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val
+
+      // 9. 首次出发 render 函数，做依赖收集
+      // vue2 中一个组件一个 watcher，一个 key 对应一个 Dep，所以理论上一个 watcher 对应多个 Dep
+      // 但是，代码里可能存在 watch 方法，监听的属性和很多 key 有关，所以又有可能是 多对多的关系
       if (Dep.target) {
         dep.depend()
+
+        // 10. 子 Ob 也要和当前的 watcher 建立关系
         if (childOb) {
           childOb.dep.depend()
           if (Array.isArray(value)) {
@@ -197,6 +225,7 @@ export function defineReactive (
  * Set a property on an object. Adds the new property and
  * triggers change notification if the property doesn't
  * already exist.
+ * 设置对象的属性。添加新属性并在该属性不存在时触发更改通知。
  */
 export function set (target: Array<any> | Object, key: any, val: any): any {
   if (process.env.NODE_ENV !== 'production' &&
@@ -232,6 +261,7 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
 
 /**
  * Delete a property and trigger change if necessary.
+ * 删除属性并在必要时触发更改。
  */
 export function del (target: Array<any> | Object, key: any) {
   if (process.env.NODE_ENV !== 'production' &&

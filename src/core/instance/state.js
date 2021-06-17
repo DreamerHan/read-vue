@@ -49,9 +49,14 @@ export function proxy (target: Object, sourceKey: string, key: string) {
 export function initState (vm: Component) {
   vm._watchers = []
   const opts = vm.$options
+
+  // 1. 优先级顺序：props -> methods -> data
   if (opts.props) initProps(vm, opts.props)
   if (opts.methods) initMethods(vm, opts.methods)
+  
   if (opts.data) {
+    
+    // 2. 初始化 data 数据
     initData(vm)
   } else {
     observe(vm._data = {}, true /* asRootData */)
@@ -112,9 +117,12 @@ function initProps (vm: Component, propsOptions: Object) {
 
 function initData (vm: Component) {
   let data = vm.$options.data
+
+  // 3. 判断 data 是函数还是对象
   data = vm._data = typeof data === 'function'
     ? getData(data, vm)
     : data || {}
+
   if (!isPlainObject(data)) {
     data = {}
     process.env.NODE_ENV !== 'production' && warn(
@@ -148,6 +156,8 @@ function initData (vm: Component) {
       proxy(vm, `_data`, key)
     }
   }
+
+  // 4. 响应式数据代理
   // observe data
   observe(data, true /* asRootData */)
 }
@@ -320,15 +330,21 @@ function createWatcher (
 }
 
 export function stateMixin (Vue: Class<Component>) {
-  // flow somehow has problems with directly declared definition object
-  // when using Object.defineProperty, so we have to procedurally build up
-  // the object here.
+  // flow somehow has problems with directly declared definition object when using Object.defineProperty,
+  // so we have to procedurally build up the object here.
+
+  // flow 在使用object.defineProperty 时，直接声明定义对象会有问题，
+  // 所以我们必须在这里按程序建立对象
+
+
+  // vue.prototype 上的 $data 和 $props 做响应式代理
   const dataDef = {}
   dataDef.get = function () { return this._data }
   const propsDef = {}
   propsDef.get = function () { return this._props }
   if (process.env.NODE_ENV !== 'production') {
     dataDef.set = function () {
+      // 避免替换根实例的 $data，请改用嵌套data属性。
       warn(
         'Avoid replacing instance root $data. ' +
         'Use nested data properties instead.',
@@ -342,6 +358,7 @@ export function stateMixin (Vue: Class<Component>) {
   Object.defineProperty(Vue.prototype, '$data', dataDef)
   Object.defineProperty(Vue.prototype, '$props', propsDef)
 
+  // Vue.prototype 上添加 $set、$delete 和 $watch
   Vue.prototype.$set = set
   Vue.prototype.$delete = del
 

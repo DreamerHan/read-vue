@@ -51,7 +51,7 @@ export const isServerRendering = () => {
   return _isServer
 }
 
-// detect devtools
+// detect devtools -- 检测开发工具
 export const devtools = inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__
 
 /* istanbul ignore next */

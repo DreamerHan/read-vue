@@ -24,6 +24,7 @@ export const isHTMLTag = makeMap(
 
 // this map is intentionally selective, only covering SVG elements that may
 // contain child elements.
+// 这个映射是有意选择的，只覆盖可能包含子元素的SVG元素
 export const isSVG = makeMap(
   'svg,animate,circle,clippath,cursor,defs,desc,ellipse,filter,font-face,' +
   'foreignobject,g,glyph,image,line,marker,mask,missing-glyph,path,pattern,' +
